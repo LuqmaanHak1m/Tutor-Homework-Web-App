@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Tutor Homework App</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- MSAL.js library for Azure AD B2C authentication -->
+    <script src="https://alcdn.msauth.net/browser/2.30.0/js/msal-browser.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <header class="dashboard-header">
+            <div class="header-left">
+                <h1>Homework Dashboard</h1>
+                <div class="user-welcome" id="userWelcome">
+                    <span class="welcome-text">Welcome back!</span>
+                    <div class="user-profile">
+                        <div class="user-avatar-small">
+                            <img id="userAvatarSmall" src="" alt="User Avatar" style="display: none;">
+                            <div id="userInitialsSmall" class="user-initials-small"></div>
+                        </div>
+                        <div class="user-details-small">
+                            <span id="userNameSmall" class="user-name-small"></span>
+                            <span id="userEmailSmall" class="user-email-small"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="window.location.href='tutor.html'">Tutor Access</button>
+                <button class="btn btn-secondary" onclick="signOut()">Sign Out</button>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <div class="add-task-section">
+                <h3>Add New Task</h3>
+                <form id="addTaskForm" class="add-task-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="taskTitle">Task Title</label>
+                            <input type="text" id="taskTitle" name="taskTitle" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="dueDate">Due Date</label>
+                            <input type="date" id="dueDate" name="dueDate" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskDescription">Description</label>
+                        <textarea id="taskDescription" name="taskDescription" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Task</button>
+                </form>
+            </div>
+
+            <div class="tasks-section">
+                <h3>Your Tasks</h3>
+                <div id="tasksList" class="tasks-list">
+                    <!-- Tasks will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

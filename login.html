@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Tutor Homework App</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- MSAL.js library for Azure AD B2C authentication -->
+    <script src="https://alcdn.msauth.net/browser/2.30.0/js/msal-browser.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="login-card">
+            <h2>Sign In</h2>
+            <div class="auth-status" id="authStatus">
+                <p>Please sign in to access your homework dashboard.</p>
+            </div>
+
+            <div class="auth-buttons">
+                <button id="signInButton" class="btn btn-primary" onclick="signIn()">
+                    Sign In with Microsoft
+                </button>
+                <button id="signOutButton" class="btn btn-secondary" onclick="signOut()" style="display: none;">
+                    Sign Out
+                </button>
+            </div>
+
+            <div class="user-info" id="userInfo" style="display: none;">
+                <div class="user-avatar">
+                    <img id="userAvatar" src="" alt="User Avatar" style="display: none;">
+                    <div id="userInitials" class="user-initials"></div>
+                </div>
+                <div class="user-details">
+                    <p id="userName" class="user-name"></p>
+                    <p id="userEmail" class="user-email"></p>
+                </div>
+            </div>
+
+            <p class="back-link">
+                <a href="index.html">← Back to Home</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="auth.js"></script>
+</body>
+
+</html>
