@@ -9,10 +9,14 @@ import hashlib
 from typing import Dict, Any
 
 # Environment variables
-COSMOS_CONN_STRING = os.environ["COSMOS_CONN_STRING"]
-DATABASE_NAME = os.environ["COSMOS_DB"]
-CONTAINER_NAME = "users"  # Separate container for users
-JWT_SECRET = os.environ["JWT_SECRET"]
+COSMOS_CONN_STRING = os.environ.get("COSMOS_CONN_STRING")
+DATABASE_NAME = os.environ.get("COSMOS_DB")
+JWT_SECRET = os.environ.get("JWT_SECRET")
+
+if not COSMOS_CONN_STRING or not DATABASE_NAME or not JWT_SECRET:
+    raise RuntimeError("Missing required environment variables: COSMOS_CONN_STRING, COSMOS_DB, or JWT_SECRET")
+
+CONTAINER_NAME = "users"
 
 # Initialize Cosmos DB client
 client = CosmosClient.from_connection_string(COSMOS_CONN_STRING)
