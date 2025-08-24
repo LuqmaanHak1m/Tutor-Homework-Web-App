@@ -12,43 +12,56 @@
     <div class="container">
         <header class="dashboard-header">
             <div class="header-left">
-                <h1>Homework Dashboard</h1>
+                <h1>Welcome to Homework Tracker</h1>
                 <div class="user-welcome" id="userWelcome">
                     <span class="welcome-text">Welcome back, <span id="currentUsername"></span>!</span>
                 </div>
             </div>
             <div class="header-actions">
-                <button class="btn btn-secondary" onclick="window.location.href='tutor.html'">Tutor Access</button>
                 <button class="btn btn-secondary" onclick="logoutUser()">Sign Out</button>
             </div>
         </header>
 
         <div class="dashboard-content">
-            <div class="add-task-section">
-                <h3>Add New Task</h3>
-                <form id="addTaskForm" class="add-task-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="taskTitle">Task Title</label>
-                            <input type="text" id="taskTitle" name="taskTitle" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="dueDate">Due Date</label>
-                            <input type="date" id="dueDate" name="dueDate" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="taskDescription">Description</label>
-                        <textarea id="taskDescription" name="taskDescription" rows="3"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Add Task</button>
-                </form>
-            </div>
+            <div class="role-selection-section">
+                <h3>Choose Your Role</h3>
+                <p class="role-description">Select how you'd like to use the homework tracker today.</p>
 
-            <div class="tasks-section">
-                <h3>Your Tasks</h3>
-                <div id="tasksList" class="tasks-list">
-                    <!-- Tasks will be populated by JavaScript -->
+                <div class="role-cards">
+                    <div class="role-card" onclick="window.location.href='dashboard-tutor.html'">
+                        <div class="role-icon">👨‍🏫</div>
+                        <h4>Tutor Dashboard</h4>
+                        <p>Create and manage homework assignments for your students. View all tasks and track progress.
+                        </p>
+                        <div class="role-features">
+                            <span class="feature-tag">Add Tasks</span>
+                            <span class="feature-tag">View All Students</span>
+                            <span class="feature-tag">Track Progress</span>
+                        </div>
+                        <button class="btn btn-primary">Access Tutor Dashboard</button>
+                    </div>
+
+                    <div class="role-card" onclick="window.location.href='dashboard-student.html'">
+                        <div class="role-icon">👨‍🎓</div>
+                        <h4>Student Dashboard</h4>
+                        <p>View your assigned homework tasks, mark them as complete, and track your progress.</p>
+                        <div class="role-features">
+                            <span class="feature-tag">View Tasks</span>
+                            <span class="feature-tag">Mark Complete</span>
+                            <span class="feature-tag">Track Progress</span>
+                        </div>
+                        <button class="btn btn-primary">Access Student Dashboard</button>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <h4>Quick Actions</h4>
+                    <div class="quick-action-buttons">
+                        <button class="btn btn-secondary" onclick="window.location.href='tutor.html'">Quick Add
+                            Task</button>
+                        <button class="btn btn-secondary" onclick="window.location.href='dashboard-student.html'">View
+                            My Tasks</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -56,7 +69,6 @@
 
     <script src="config.js"></script>
     <script src="auth.js"></script>
-    <script src="script.js"></script>
     <script>
         // Check authentication on page load
         document.addEventListener('DOMContentLoaded', function () {

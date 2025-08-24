@@ -1,12 +1,15 @@
 # Tutor Homework Web App
 
-A modern, secure web application for managing homework tasks and assignments with JWT authentication and Azure Functions backend.
+A modern, secure web application for managing homework tasks and assignments with JWT authentication and Azure Functions backend. Features separate dashboards for tutors and students with role-based access control.
 
 ## Features
 
 - **Secure Authentication**: JWT-based login/registration system
 - **User Management**: Individual user accounts with secure password storage
+- **Role-Based Access**: Separate dashboards for tutors and students
 - **Homework Dashboard**: Add, view, and manage homework tasks
+- **Student Task Management**: Students can view and mark tasks as complete
+- **Tutor Task Creation**: Tutors can create and assign tasks to students
 - **Azure Functions Backend**: Scalable serverless backend with Cosmos DB
 - **Responsive Design**: Works on desktop and mobile devices
 - **Real-time Updates**: Tasks are stored in Azure Cosmos DB
@@ -23,6 +26,30 @@ A modern, secure web application for managing homework tasks and assignments wit
 - **Modern UI**: Clean, responsive design with authentication flows
 - **JWT Management**: Automatic token handling and validation
 - **Protected Routes**: Authentication required for all operations
+- **Role-Based Dashboards**: Separate interfaces for tutors and students
+
+## Dashboard Structure
+
+### Main Dashboard (`dashboard.html`)
+- Role selection page allowing users to choose between tutor and student views
+- Quick access to common functions
+
+### Tutor Dashboard (`dashboard-tutor.html`)
+- Quick task creation form
+- Access to detailed task creation
+- View all student tasks
+- Progress tracking tools
+
+### Student Dashboard (`dashboard-student.html`)
+- Overview of assigned tasks with statistics
+- Task filtering (All, Pending, Completed, Overdue)
+- Mark tasks as complete
+- Progress tracking
+
+### Task Creation (`tutor.html`)
+- Detailed homework task creation form
+- Student assignment dropdown
+- Comprehensive task management
 
 ## Quick Start
 
@@ -96,14 +123,17 @@ hw_tracker_backend/
 ### Frontend
 ```
 hw_tracker_frontend/
-├── index.html          # Landing page
-├── login.html          # Login form
-├── register.html       # Registration form
-├── dashboard.html      # Main dashboard
-├── auth.js            # Authentication utilities
-├── config.js          # Configuration settings
-├── script.js          # Dashboard functionality
-└── styles.css         # Styling
+├── index.html              # Landing page
+├── login.html              # Login form
+├── register.html           # Registration form
+├── dashboard.html          # Main role selection dashboard
+├── dashboard-tutor.html    # Tutor dashboard
+├── dashboard-student.html  # Student dashboard
+├── tutor.html              # Detailed task creation
+├── auth.js                 # Authentication utilities
+├── config.js               # Configuration settings
+├── script.js               # Main application logic
+└── styles.css              # Main stylesheet
 ```
 
 ## Security Features

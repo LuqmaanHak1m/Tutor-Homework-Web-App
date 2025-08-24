@@ -1,12 +1,6 @@
-// Configuration file for Azure Function endpoints and JWT authentication
-// Update this file with your actual Azure Function URLs
-
-const API_BASE = "http://localhost:7071/api"; // or your deployed URL
-const DEFAULT_CHILD_ID = "alex";
-
 const CONFIG = {
     // Replace with your actual Azure Function base URL
-    API_BASE_URL: 'https://hwtracker-func-001-hpaddmbaasfxhyg0.uksouth-01.azurewebsites.net/api',
+    API_BASE_URL: 'https://hwtracker-func-001-hpaddmbaasfxhyg0.uksouth-01.azurewebsites.net/api/homework/{id?}?',
     
     // JWT Authentication Configuration
     AUTH: {

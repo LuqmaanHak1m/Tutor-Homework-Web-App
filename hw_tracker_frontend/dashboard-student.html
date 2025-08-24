@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Homework Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <header class="dashboard-header">
+            <div class="header-left">
+                <h1>Student Dashboard</h1>
+                <div class="user-welcome" id="userWelcome">
+                    <span class="welcome-text">Welcome back, <span id="currentUsername"></span>!</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="window.location.href='dashboard-tutor.html'">Tutor
+                    View</button>
+                <button class="btn btn-secondary" onclick="logoutUser()">Sign Out</button>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <div class="student-overview-section">
+                <h3>Your Homework Overview</h3>
+                <div class="overview-cards">
+                    <div class="overview-card">
+                        <div class="overview-number" id="totalTasks">0</div>
+                        <div class="overview-label">Total Tasks</div>
+                    </div>
+                    <div class="overview-card">
+                        <div class="overview-number" id="pendingTasks">0</div>
+                        <div class="overview-label">Pending</div>
+                    </div>
+                    <div class="overview-card">
+                        <div class="overview-number" id="completedTasks">0</div>
+                        <div class="overview-label">Completed</div>
+                    </div>
+                    <div class="overview-card">
+                        <div class="overview-number" id="overdueTasks">0</div>
+                        <div class="overview-label">Overdue</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tasks-section">
+                <h3>Your Tasks</h3>
+                <div class="task-filters">
+                    <button class="filter-btn active" data-filter="all">All Tasks</button>
+                    <button class="filter-btn" data-filter="pending">Pending</button>
+                    <button class="filter-btn" data-filter="completed">Completed</button>
+                    <button class="filter-btn" data-filter="overdue">Overdue</button>
+                </div>
+                <div id="tasksList" class="tasks-list">
+                    <!-- Tasks will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <div id="alerts"></div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Check authentication on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!requireAuth()) {
+                return;
+            }
+
+            // Initialize auth check
+            initAuthCheck();
+
+            // Display current username
+            const username = getCurrentUsername();
+            if (username) {
+                document.getElementById('currentUsername').textContent = username;
+            }
+
+            // Initialize student dashboard
+            initializeStudentDashboard();
+        });
+
+        function initializeStudentDashboard() {
+            // Initialize task filters
+            initializeTaskFilters();
+
+            // Display tasks
+            displayStudentTasks();
+        }
+
+        function initializeTaskFilters() {
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    // Remove active class from all buttons
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+
+                    const filter = this.getAttribute('data-filter');
+                    filterTasks(filter);
+                });
+            });
+        }
+
+        async function displayStudentTasks() {
+            try {
+                const tasks = await fetchHomeworkTasks();
+                const studentTasks = tasks.filter(task => task.childId === getCurrentUsername().toLowerCase());
+
+                updateOverviewCards(studentTasks);
+                displayFilteredTasks(studentTasks, 'all');
+
+            } catch (error) {
+                console.error('Error displaying student tasks:', error);
+                showAlert('Failed to load your tasks. Please try again.', 'error');
+            }
+        }
+
+        function updateOverviewCards(tasks) {
+            const total = tasks.length;
+            const pending = tasks.filter(task => !task.completed && !isOverdue(task.dueDate)).length;
+            const completed = tasks.filter(task => task.completed).length;
+            const overdue = tasks.filter(task => !task.completed && isOverdue(task.dueDate)).length;
+
+            document.getElementById('totalTasks').textContent = total;
+            document.getElementById('pendingTasks').textContent = pending;
+            document.getElementById('completedTasks').textContent = completed;
+            document.getElementById('overdueTasks').textContent = overdue;
+        }
+
+        function isOverdue(dueDate) {
+            if (!dueDate) return false;
+            const today = new Date();
+            const due = new Date(dueDate);
+            return due < today;
+        }
+
+        function filterTasks(filter) {
+            const tasks = Array.from(document.querySelectorAll('.task-item'));
+            tasks.forEach(task => {
+                let show = true;
+
+                if (filter === 'pending') {
+                    show = !task.classList.contains('completed') && !task.classList.contains('overdue');
+                } else if (filter === 'completed') {
+                    show = task.classList.contains('completed');
+                } else if (filter === 'overdue') {
+                    show = task.classList.contains('overdue');
+                }
+
+                task.style.display = show ? 'flex' : 'none';
+            });
+        }
+
+        function displayFilteredTasks(tasks, filter) {
+            const tasksList = document.getElementById('tasksList');
+
+            if (tasks.length === 0) {
+                tasksList.innerHTML = '<div class="no-tasks">No tasks found. Great job staying on top of your homework! 🎉</div>';
+                return;
+            }
+
+            tasksList.innerHTML = tasks.map(task => {
+                const isOverdueTask = isOverdue(task.dueDate);
+                const taskClass = task.completed ? 'completed' : (isOverdueTask ? 'overdue' : 'pending');
+
+                return `
+                    <div class="task-item ${taskClass}">
+                        <div class="task-info">
+                            <div class="task-title">${task.title}</div>
+                            ${task.description ? `<div class="task-description">${task.description}</div>` : ''}
+                            <div class="task-meta">
+                                <span class="task-due">Due: ${task.dueDate || 'No due date'}</span>
+                                ${isOverdueTask && !task.completed ? '<span class="task-overdue">⚠️ Overdue</span>' : ''}
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            ${!task.completed ?
+                        `<button class="btn btn-success" onclick="markTaskComplete('${task.id}')">Mark Complete</button>` :
+                        `<span class="task-completed">✅ Completed</span>`
+                    }
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function markTaskComplete(taskId) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/homework/${taskId}`, {
+                    method: 'PATCH',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({ completed: true })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                showAlert('Task marked as complete! 🎉', 'success');
+                // Refresh the display
+                displayStudentTasks();
+
+            } catch (error) {
+                console.error('Error marking task complete:', error);
+                showAlert('Failed to mark task as complete. Please try again.', 'error');
+            }
+        }
+
+        function showAlert(message, type = 'info') {
+            const alertsEl = document.getElementById('alerts');
+            alertsEl.innerHTML = `<div class="alert ${type}">${message}</div>`;
+            setTimeout(() => alertsEl.innerHTML = "", 3500);
+        }
+    </script>
+</body>
+
+</html>

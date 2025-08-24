@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutor Dashboard - Homework Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <header class="dashboard-header">
+            <div class="header-left">
+                <h1>Tutor Dashboard</h1>
+                <div class="user-welcome" id="userWelcome">
+                    <span class="welcome-text">Welcome back, <span id="currentUsername"></span>!</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="window.location.href='tutor.html'">Add New Task</button>
+                <button class="btn btn-secondary" onclick="window.location.href='dashboard.html'">Student View</button>
+                <button class="btn btn-secondary" onclick="logoutUser()">Sign Out</button>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <div class="add-task-section">
+                <h3>Quick Add New Task</h3>
+                <form id="addTaskForm" class="add-task-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="taskTitle">Task Title</label>
+                            <input type="text" id="taskTitle" name="taskTitle" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="dueDate">Due Date</label>
+                            <input type="date" id="dueDate" name="dueDate" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskDescription">Description</label>
+                        <textarea id="taskDescription" name="taskDescription" rows="3"
+                            placeholder="Enter task description..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentSelect">Assign to Student</label>
+                        <select id="studentSelect" name="studentSelect" required>
+                            <option value="">Select a student...</option>
+                            <option value="alex">Alex</option>
+                            <option value="sarah">Sarah</option>
+                            <option value="mike">Mike</option>
+                            <option value="emma">Emma</option>
+                            <option value="james">James</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Add Task</button>
+                        <button type="reset" class="btn btn-secondary">Clear Form</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="tutor-actions-section">
+                <h3>Tutor Actions</h3>
+                <div class="action-cards">
+                    <div class="action-card" onclick="window.location.href='tutor.html'">
+                        <div class="action-icon">📝</div>
+                        <h4>Create Detailed Task</h4>
+                        <p>Use the advanced form to create comprehensive homework assignments</p>
+                    </div>
+                    <div class="action-card" onclick="window.location.href='dashboard.html'">
+                        <div class="action-icon">👥</div>
+                        <h4>View Student Tasks</h4>
+                        <p>See all tasks assigned to students and their progress</p>
+                    </div>
+                    <div class="action-card">
+                        <div class="action-icon">📊</div>
+                        <h4>Progress Reports</h4>
+                        <p>Generate and view student progress reports (Coming Soon)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="alerts"></div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Check authentication on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!requireAuth()) {
+                return;
+            }
+
+            // Initialize auth check
+            initAuthCheck();
+
+            // Display current username
+            const username = getCurrentUsername();
+            if (username) {
+                document.getElementById('currentUsername').textContent = username;
+            }
+
+            // Initialize the quick add task form
+            initializeQuickAddForm();
+        });
+
+        function initializeQuickAddForm() {
+            const addTaskForm = document.getElementById('addTaskForm');
+            addTaskForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                addQuickTask();
+            });
+        }
+
+        async function addQuickTask() {
+            const title = document.getElementById('taskTitle').value;
+            const description = document.getElementById('taskDescription').value;
+            const dueDate = document.getElementById('dueDate').value;
+            const studentSelect = document.getElementById('studentSelect').value;
+
+            if (!title || !dueDate || !studentSelect) {
+                showAlert('Please fill in all required fields', 'error');
+                return;
+            }
+
+            const newTask = {
+                title: title,
+                description: description,
+                dueDate: dueDate,
+                childId: studentSelect,
+                completed: false
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/homework`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(newTask)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                showAlert('Task created successfully! 🎉', 'success');
+                addTaskForm.reset();
+
+            } catch (error) {
+                console.error('Error adding task:', error);
+                showAlert('Failed to create task. Please try again.', 'error');
+            }
+        }
+
+        function showAlert(message, type = 'info') {
+            const alertsEl = document.getElementById('alerts');
+            alertsEl.innerHTML = `<div class="alert ${type}">${message}</div>`;
+            setTimeout(() => alertsEl.innerHTML = "", 3500);
+        }
+    </script>
+</body>
+
+</html>

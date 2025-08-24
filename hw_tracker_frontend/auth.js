@@ -145,4 +145,31 @@ function redirectIfAuthenticated() {
         return true;
     }
     return false;
+}
+
+// Get user role (this could be extended to check actual user roles from the backend)
+function getUserRole() {
+    // For now, we'll use a simple approach
+    // In a real app, this would come from the JWT token or user profile
+    const username = getCurrentUsername();
+    if (username) {
+        // You could implement role-based logic here
+        // For example, check if username matches certain patterns or roles
+        return 'user'; // Default role
+    }
+    return null;
+}
+
+// Check if user has tutor permissions
+function isTutor() {
+    // This could be extended to check actual user roles
+    // For now, we'll allow all authenticated users to access tutor features
+    return isAuthenticated();
+}
+
+// Check if user has student permissions
+function isStudent() {
+    // This could be extended to check actual user roles
+    // For now, we'll allow all authenticated users to access student features
+    return isAuthenticated();
 } 
