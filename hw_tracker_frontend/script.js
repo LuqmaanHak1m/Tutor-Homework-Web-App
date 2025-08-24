@@ -1,5 +1,5 @@
 // Azure Function base URL - replace with your actual Azure Function URL
-const API_BASE_URL = 'https://your-azure-function.azurewebsites.net/api';
+const API_BASE_URL = 'https://hwtracker-func-001-hpaddmbaasfxhyg0.uksouth-01.azurewebsites.net/api';
 
 // Check API connectivity and show status
 async function checkApiConnectivity() {
@@ -11,9 +11,7 @@ async function checkApiConnectivity() {
     try {
         const response = await fetch(`${API_BASE_URL}/homework`, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
+            headers: getAuthHeaders()
         });
         
         if (response.ok) {
@@ -33,7 +31,9 @@ async function checkApiConnectivity() {
 // Initialize the app when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     // Check authentication first
-    checkAuthentication();
+    if (!requireAuth()) {
+        return;
+    }
     
     // Check API connectivity
     checkApiConnectivity();
@@ -43,74 +43,6 @@ document.addEventListener('DOMContentLoaded', function() {
         initializeDashboard();
     }
 });
-
-// Check if user is authenticated
-function checkAuthentication() {
-    const userAccount = localStorage.getItem('userAccount');
-    if (!userAccount) {
-        // No authenticated user, redirect to login
-        window.location.href = 'login.html';
-        return;
-    }
-    
-    try {
-        const account = JSON.parse(userAccount);
-        if (account && account.username) {
-            // Display user information
-            displayUserInfo(account);
-        } else {
-            // Invalid account data, redirect to login
-            localStorage.removeItem('userAccount');
-            localStorage.removeItem('isLoggedIn');
-            window.location.href = 'login.html';
-        }
-    } catch (error) {
-        console.error('Error parsing user account:', error);
-        localStorage.removeItem('userAccount');
-        localStorage.removeItem('isLoggedIn');
-        window.location.href = 'login.html';
-    }
-}
-
-// Display user information in dashboard header
-function displayUserInfo(account) {
-    const userNameSmall = document.getElementById('userNameSmall');
-    const userEmailSmall = document.getElementById('userEmailSmall');
-    const userAvatarSmall = document.getElementById('userAvatarSmall');
-    const userInitialsSmall = document.getElementById('userInitialsSmall');
-
-    // Set user name
-    if (account.name) {
-        userNameSmall.textContent = account.name;
-    } else if (account.username) {
-        userNameSmall.textContent = account.username.split('@')[0]; // Show username without domain
-    } else {
-        userNameSmall.textContent = 'User';
-    }
-
-    // Set user email
-    if (account.username) {
-        userEmailSmall.textContent = account.username;
-    } else {
-        userEmailSmall.textContent = 'No email available';
-    }
-
-    // Handle user avatar/initials
-    if (account.name) {
-        const initials = account.name.split(' ').map(n => n[0]).join('').toUpperCase();
-        userInitialsSmall.textContent = initials;
-        userInitialsSmall.style.display = 'block';
-        userAvatarSmall.style.display = 'none';
-    } else if (account.username) {
-        const initial = account.username.charAt(0).toUpperCase();
-        userInitialsSmall.textContent = initial;
-        userInitialsSmall.style.display = 'block';
-        userAvatarSmall.style.display = 'none';
-    } else {
-        userInitialsSmall.style.display = 'none';
-        userAvatarSmall.style.display = 'none';
-    }
-}
 
 // Dashboard functionality
 function initializeDashboard() {
@@ -130,9 +62,7 @@ async function fetchHomeworkTasks() {
     try {
         const response = await fetch(`${API_BASE_URL}/homework`, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
+            headers: getAuthHeaders()
         });
         
         if (!response.ok) {
@@ -170,9 +100,7 @@ async function addNewTask() {
     try {
         const response = await fetch(`${API_BASE_URL}/homework`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: getAuthHeaders(),
             body: JSON.stringify(newTask)
         });
         
@@ -243,9 +171,7 @@ async function toggleTaskComplete(taskId) {
     try {
         const response = await fetch(`${API_BASE_URL}/homework/${taskId}/complete`, {
             method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: getAuthHeaders(),
             body: JSON.stringify({ completed: true })
         });
         

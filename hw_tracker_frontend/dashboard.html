@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Tutor Homework App</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- MSAL.js library for Azure AD B2C authentication -->
-    <script src="https://alcdn.msauth.net/browser/2.30.0/js/msal-browser.min.js"></script>
 </head>
 
 <body>
@@ -16,22 +14,12 @@
             <div class="header-left">
                 <h1>Homework Dashboard</h1>
                 <div class="user-welcome" id="userWelcome">
-                    <span class="welcome-text">Welcome back!</span>
-                    <div class="user-profile">
-                        <div class="user-avatar-small">
-                            <img id="userAvatarSmall" src="" alt="User Avatar" style="display: none;">
-                            <div id="userInitialsSmall" class="user-initials-small"></div>
-                        </div>
-                        <div class="user-details-small">
-                            <span id="userNameSmall" class="user-name-small"></span>
-                            <span id="userEmailSmall" class="user-email-small"></span>
-                        </div>
-                    </div>
+                    <span class="welcome-text">Welcome back, <span id="currentUsername"></span>!</span>
                 </div>
             </div>
             <div class="header-actions">
                 <button class="btn btn-secondary" onclick="window.location.href='tutor.html'">Tutor Access</button>
-                <button class="btn btn-secondary" onclick="signOut()">Sign Out</button>
+                <button class="btn btn-secondary" onclick="logoutUser()">Sign Out</button>
             </div>
         </header>
 
@@ -69,6 +57,23 @@
     <script src="config.js"></script>
     <script src="auth.js"></script>
     <script src="script.js"></script>
+    <script>
+        // Check authentication on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!requireAuth()) {
+                return;
+            }
+
+            // Initialize auth check
+            initAuthCheck();
+
+            // Display current username
+            const username = getCurrentUsername();
+            if (username) {
+                document.getElementById('currentUsername').textContent = username;
+            }
+        });
+    </script>
 </body>
 
 </html>

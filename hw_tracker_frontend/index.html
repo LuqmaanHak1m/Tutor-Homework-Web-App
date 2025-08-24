@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutor Homework App - Welcome</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .hero-section {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin-bottom: 3rem;
+        }
+
+        .hero-section h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero-section p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-button {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .cta-button.primary {
+            background: #28a745;
+            color: white;
+        }
+
+        .cta-button.primary:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .cta-button.secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .cta-button.secondary:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .features-section {
+            padding: 3rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .feature-card h3 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="hero-section">
+        <h1>Welcome to Tutor Homework Tracker</h1>
+        <p>Organize, track, and complete homework assignments with ease</p>
+        <div class="cta-buttons">
+            <a href="login.html" class="cta-button primary">Sign In</a>
+            <a href="register.html" class="cta-button secondary">Create Account</a>
+        </div>
+    </div>
+
+    <div class="features-section">
+        <h2 style="text-align: center; margin-bottom: 2rem; color: #333;">Why Choose Our App?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📚</div>
+                <h3>Easy Task Management</h3>
+                <p>Create, organize, and track homework assignments with a simple, intuitive interface.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📅</div>
+                <h3>Due Date Tracking</h3>
+                <p>Never miss a deadline with our built-in due date reminders and tracking system.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">✅</div>
+                <h3>Progress Monitoring</h3>
+                <p>Track completion status and celebrate achievements as you finish your assignments.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>Secure & Private</h3>
+                <p>Your data is protected with industry-standard security and JWT authentication.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        // Check if user is already authenticated and redirect to dashboard
+        document.addEventListener('DOMContentLoaded', function () {
+            if (redirectIfAuthenticated()) {
+                return;
+            }
+        });
+    </script>
+</body>
+
+</html>

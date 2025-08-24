@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Tutor Homework Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .auth-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-header h1 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-header p {
+            color: #666;
+            margin: 0;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input {
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .auth-button {
+            background: #28a745;
+            color: white;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .auth-button:hover {
+            background: #218838;
+        }
+
+        .auth-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .auth-links {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .auth-links a {
+            color: #007bff;
+            text-decoration: none;
+            margin: 0 0.5rem;
+        }
+
+        .auth-links a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .password-requirements {
+            font-size: 0.875rem;
+            color: #666;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h1>Create Account</h1>
+                <p>Join us to start tracking homework</p>
+            </div>
+
+            <div id="errorMessage" class="error-message"></div>
+            <div id="successMessage" class="success-message"></div>
+
+            <form class="auth-form" id="registerForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required minlength="3">
+                    <div class="password-requirements">Username must be at least 3 characters long</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required minlength="6">
+                    <div class="password-requirements">Password must be at least 6 characters long</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                </div>
+
+                <button type="submit" class="auth-button" id="registerButton">
+                    Create Account
+                </button>
+            </form>
+
+            <div class="auth-links">
+                <a href="login.html">Already have an account? Sign In</a>
+                <span>•</span>
+                <a href="index.html">Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        // Check if user is already authenticated
+        document.addEventListener('DOMContentLoaded', function () {
+            if (redirectIfAuthenticated()) {
+                return;
+            }
+
+            // Initialize auth check
+            initLoginAuthCheck();
+        });
+
+        // Handle register form submission
+        document.getElementById('registerForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const registerButton = document.getElementById('registerButton');
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+
+            // Clear previous messages
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+
+            // Validation
+            if (!username || !password || !confirmPassword) {
+                showError('Please fill in all fields');
+                return;
+            }
+
+            if (username.length < 3) {
+                showError('Username must be at least 3 characters long');
+                return;
+            }
+
+            if (password.length < 6) {
+                showError('Password must be at least 6 characters long');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showError('Passwords do not match');
+                return;
+            }
+
+            try {
+                // Show loading state
+                registerButton.disabled = true;
+                registerButton.textContent = 'Creating Account...';
+                document.body.classList.add('loading');
+
+                // Attempt registration
+                await registerUser(username, password);
+
+                // Show success message
+                showSuccess('Account created successfully! Redirecting to dashboard...');
+
+                // Redirect to dashboard after a short delay
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+
+            } catch (error) {
+                showError(error.message || 'Registration failed. Please try again.');
+            } finally {
+                // Reset loading state
+                registerButton.disabled = false;
+                registerButton.textContent = 'Create Account';
+                document.body.classList.remove('loading');
+            }
+        });
+
+        function showError(message) {
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+
+        function showSuccess(message) {
+            const successMessage = document.getElementById('successMessage');
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+        }
+    </script>
+</body>
+
+</html>
