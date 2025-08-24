@@ -1,6 +1,6 @@
 const CONFIG = {
     // Replace with your actual Azure Function base URL
-    API_BASE_URL: 'https://hwtracker-func-001-hpaddmbaasfxhyg0.uksouth-01.azurewebsites.net/api/homework/{id?}?',
+    API_BASE_URL: 'https://hwtracker-func-001-hpaddmbaasfxhyg0.uksouth-01.azurewebsites.net/api',
     
     // JWT Authentication Configuration
     AUTH: {

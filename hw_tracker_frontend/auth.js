@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://hwtracker-func-001-hpaddmbaasfxhyg0.uksouth-01.azurewebsites.net/api/homework/{id?}?';
+const API_BASE_URL = 'https://hwtracker-func-001-hpaddmbaasfxhyg0.uksouth-01.azurewebsites.net/api';
 
 // Check if user is authenticated
 function isAuthenticated() {

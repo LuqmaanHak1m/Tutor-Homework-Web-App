@@ -1,5 +1,5 @@
 // Azure Function base URL - replace with your actual Azure Function URL
-const API_BASE_URL = 'https://hwtracker-func-001-hpaddmbaasfxhyg0.uksouth-01.azurewebsites.net/api/homework/{id?}?';
+const API_BASE_URL = 'https://hwtracker-func-001-hpaddmbaasfxhyg0.uksouth-01.azurewebsites.net/api';
 
 // Check API connectivity and show status
 async function checkApiConnectivity() {
