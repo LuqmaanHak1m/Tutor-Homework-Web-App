@@ -11,14 +11,14 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'hw_tracker_backend'  # <- folder with host.json & requirements.txt
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'hw_tracker_backend'  # Folder with host.json & requirements.txt
   PYTHON_VERSION: '3.11'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read #This is required for actions/checkout
+      contents: read
 
     steps:
       - name: Checkout repository
@@ -29,22 +29,23 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Create and start virtual environment
+      - name: Install dependencies
         run: |
           python -m venv venv
           source venv/bin/activate
-
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+          pip install -r requirements.txt
         working-directory: hw_tracker_backend
 
-      # Optional: Add step to run tests here
+      # Optional: run tests here
+      # - name: Run tests
+      #   run: pytest
+      #   working-directory: hw_tracker_backend
 
       - name: Zip artifact for deployment
         run: |
           cd hw_tracker_backend
           zip -r ../release.zip ./*
-
+      
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
@@ -55,8 +56,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
+      id-token: write
+      contents: read
 
     steps:
       - name: Download artifact from build job
@@ -66,7 +67,7 @@ jobs:
 
       - name: Unzip artifact for deployment
         run: unzip release.zip -d hw_tracker_backend
-        
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -74,12 +75,9 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_E89424EA62A54F808484C5B6F82C40EC }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_64544919C8A74B4EB1F4861240163D44 }}
 
-      - name: 'Deploy to Azure Functions'
+      - name: Deploy to Azure Functions
         uses: Azure/functions-action@v1
         with:
           app-name: 'hwtracker-func-001'
           slot-name: 'Production'
           package: hw_tracker_backend
-
-          
-
