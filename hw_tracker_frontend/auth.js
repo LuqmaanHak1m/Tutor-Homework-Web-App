@@ -23,7 +23,7 @@ function getAuthHeaders() {
 // Login user
 async function loginUser(username, password) {
     try {
-        const response = await fetch(`${API_BASE}/auth/login`, {
+        const response = await fetch(`${API_BASE_URL}/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
@@ -50,7 +50,7 @@ async function loginUser(username, password) {
 // Register user
 async function registerUser(username, password) {
     try {
-        const response = await fetch(`${API_BASE}/auth/register`, {
+        const response = await fetch(`${API_BASE_URL}/auth/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
